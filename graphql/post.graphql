@@ -1,0 +1,49 @@
+query UserPosts {
+  userPosts(userId: "USER_ID") {
+    ...PostData
+  }
+}
+
+query ListPost {
+  listPost(listPostInput: { 
+    limit: 1 , page: 1 , 
+    search: { 
+      keyword: "keyword" 
+      } 
+    }) {
+    total
+    posts {
+      ...PostData
+    }
+
+  }
+}
+
+mutation CreatePost {
+  createPost(createPostInput: { content: "Hello", title: "New Post" }) {
+    ...PostData
+  }
+}
+
+subscription SubscriptionPost {
+  postCreated {
+    ...PostData
+  }
+}
+
+fragment PostData on Post {
+  id
+  createdAt
+  updatedAt
+  published
+  title
+  content
+}
+
+fragment UserData on User {
+  id
+  email
+  firstname
+  lastname
+  role
+}

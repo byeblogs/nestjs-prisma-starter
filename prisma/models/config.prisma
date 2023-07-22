@@ -17,3 +17,8 @@ generator erd {
   output   = "documentation/erd.png"
   theme    = "neutral"
 }
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+  output = "documentation"
+}

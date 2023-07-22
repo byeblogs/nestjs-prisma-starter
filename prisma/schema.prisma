@@ -27,6 +27,11 @@ generator erd {
   theme    = "neutral"
 }
 
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+  output   = "documentation"
+}
+
 //
 // post.prisma
 //

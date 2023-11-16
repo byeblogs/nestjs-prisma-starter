@@ -1,0 +1,37 @@
+import { User } from "user"
+import { Trx } from "trx"
+
+model Payment {
+  id            String        @id @default(uuid())
+  name          String?
+  description   String?
+
+  total         Decimal       @default(0)
+
+  trx           Trx           @relation(fields: [trxId], references: [id])
+  trxId         String        @map("trx_id")
+
+  buyerId       String        @map("buyer_id")
+  
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime?     @updatedAt @map("updated_at")
+  deletedAt     DateTime?     @map("deleted_at")
+
+  type          PaymentType
+  status        PaymentStatus
+
+  @@map("payment")
+}
+
+enum PaymentType {
+  BankTransfer
+  Cash
+}
+
+enum PaymentStatus {
+  Cancelled
+  Expire
+  Reject
+  Success
+  WaitingForPayment
+}

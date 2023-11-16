@@ -11,7 +11,17 @@ import { PostsModule } from 'src/posts/posts.module';
 import config from 'src/common/configs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfigService } from './gql-config.service';
-import { FacebookAuthModuleOptions, GoogleAuthModuleOptions, HybridAuthModule } from '@nestjs-hybrid-auth/all';
+import {
+  FacebookAuthModuleOptions,
+  GoogleAuthModuleOptions,
+  HybridAuthModule,
+} from '@nestjs-hybrid-auth/all';
+import { ProductsModule } from './products/products.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { GqlAuthGuard } from './auth/gql-auth.guard';
+import { RolesGuard } from './auth/roles.guard';
+import { GqlThrottlerGuard } from './auth/gql-throttler.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -55,11 +65,23 @@ import { FacebookAuthModuleOptions, GoogleAuthModuleOptions, HybridAuthModule } 
       },
       // Rest of the providers
     }),
+    ThrottlerModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        ttl: configService.get<number>('THROTTLE_TTL'),
+        limit: configService.get<number>('THROTTLE_LIMIT'),
+      }),
+      imports: [ConfigModule],
+      inject: [ConfigService],
+    }),
     AuthModule,
     UsersModule,
     PostsModule,
+    ProductsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppResolver],
+  providers: [
+    AppService, 
+    AppResolver,
+  ],
 })
 export class AppModule {}

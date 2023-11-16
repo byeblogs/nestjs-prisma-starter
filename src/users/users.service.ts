@@ -3,7 +3,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PasswordService } from 'src/auth/password.service';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { User } from './models/user.model';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {

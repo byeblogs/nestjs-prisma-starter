@@ -13,8 +13,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  // previewFeatures = []
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 generator dbml {
@@ -22,9 +22,10 @@ generator dbml {
 }
 
 generator erd {
-  provider = "prisma-erd-generator"
-  output   = "documentation/erd.png"
-  theme    = "neutral"
+  provider                  = "prisma-erd-generator"
+  output                    = "documentation/erd.svg"
+  theme                     = "neutral"
+  includeRelationFromFields = true
 }
 
 generator docs {
@@ -33,18 +34,316 @@ generator docs {
 }
 
 //
+// category.prisma
+//
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@index(fields: [name])
+  @@map("category")
+}
+
+//
+// fee.prisma
+//
+
+model Fee {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  amount Decimal @default(0)
+
+  org   Org    @relation(fields: [orgId], references: [id])
+  orgId String @map("org_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  type   FeeType
+  status FeeStatus
+
+  @@map("fee")
+}
+
+enum FeeStatus {
+  Active
+  Inactive
+}
+
+enum FeeType {
+  Fix
+  Percentage
+}
+
+//
+// org.prisma
+//
+
+model Org {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  taxs Tax[]
+  fees Fee[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  type   OrgType
+  status OrgStatus
+
+  @@index(fields: [name])
+  @@map("org")
+}
+
+enum OrgStatus {
+  Active
+  Inactive
+}
+
+enum OrgType {
+  Company
+  Marketplace
+  Store
+  WeddingOrganizer
+  Influencer
+}
+
+//
+// payment.prisma
+//
+
+model Payment {
+  id          String  @id @default(uuid())
+  name        String?
+  description String?
+
+  total Decimal @default(0)
+
+  trx   Trx    @relation(fields: [trxId], references: [id])
+  trxId String @map("trx_id")
+
+  buyerId String @map("buyer_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  type   PaymentType
+  status PaymentStatus
+
+  @@map("payment")
+}
+
+enum PaymentType {
+  BankTransfer
+  Cash
+}
+
+enum PaymentStatus {
+  Cancelled
+  Expire
+  Reject
+  Success
+  WaitingForPayment
+}
+
+//
 // post.prisma
 //
 
 model Post {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean
-  title     String
-  content   String?
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  String?
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  status PostStatus
+
+  @@index(fields: [name])
+  @@map("post")
+}
+
+enum PostStatus {
+  Active
+  Draft
+  Inactive
+}
+
+//
+// product.prisma
+//
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  sku         String?
+  price       Decimal?  @default(0)
+  minOrderQty Int?      @default(0) @map("min_order_qty")
+  qty         Int?      @default(0)
+  uom         Uom?      @default(PCS)
+  currency    Currency? @default(IDR)
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @map("category_id")
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  type   ProductType
+  status ProductStatus
+
+  @@index(fields: [name])
+  @@map("product")
+}
+
+enum ProductStatus {
+  Active
+  Inactive
+}
+
+enum ProductType {
+  ConvenienceGoods
+  ShoppingGoods
+  SpecialtyProducts
+  UnsoughtGoods
+}
+
+enum Uom {
+  PCS
+}
+
+enum Currency {
+  IDR
+}
+
+//
+// tax.prisma
+//
+
+model Tax {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  amount Decimal @default(0)
+
+  org   Org    @relation(fields: [orgId], references: [id])
+  orgId String @map("org_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  type   TaxType
+  status TaxStatus
+
+  @@map("tax")
+}
+
+enum TaxStatus {
+  Active
+  Inactive
+}
+
+enum TaxType {
+  Fix
+  Percentage
+}
+
+//
+// trx.prisma
+//
+
+model Trx {
+  id          String  @id @default(uuid())
+  name        String?
+  description String?
+  qty         Int     @default(0)
+
+  subTotal Decimal @default(0)
+
+  tax Decimal @default(0)
+  fee Decimal @default(0)
+
+  total Decimal @default(0)
+
+  buyerId  String @map("buyer_id")
+  sellerId String @map("seller_id")
+
+  trxItems TrxItem[]
+  payments Payment[]
+
+  userId String @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  status    TrxStatus
+
+  @@map("trx")
+}
+
+enum TrxStatus {
+  Cancelled
+  Expire
+  Reject
+  Success
+  WaitingForPayment
+}
+
+//
+// trxItem.prisma
+//
+
+model TrxItem {
+  id          String  @id @default(uuid())
+  name        String?
+  description String?
+  qty         Int     @default(0)
+
+  productId String @map("product_id")
+
+  trx   Trx?    @relation(fields: [trxId], references: [id])
+  trxId String? @map("trx_id")
+
+  buyerId String @map("buyer_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  status TrxItemStatus
+
+  @@map("trx_item")
+}
+
+enum TrxItemStatus {
+  Active
+  Inactive
 }
 
 //
@@ -52,18 +351,28 @@ model Post {
 //
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
+  id        String  @id @default(uuid())
+  email     String  @unique
   password  String
   firstname String?
   lastname  String?
-  posts     Post[]
-  role      Role
+  fullname  String?
+  nickname  String?
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  orgs     Org[]
+  posts    Post[]
+  products Product[]
+  role     Role
+
+  @@index(fields: [nickname])
+  @@map("user")
 }
 
 enum Role {
-  ADMIN
-  USER
+  Admin
+  User
 }

@@ -14,7 +14,7 @@ import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UsersService } from './users.service';
-import { User } from './models/user.model';
+import { User } from './entities/user.entity';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { UpdateUserInput } from './dto/update-user.input';
 
@@ -31,7 +31,7 @@ export class UsersResolver {
     return user;
   }
 
-  @Roles(Role.USER, Role.ADMIN)
+  @Roles(Role.User, Role.Admin)
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Mutation(() => User)
   async updateUser(

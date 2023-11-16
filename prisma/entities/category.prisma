@@ -1,0 +1,14 @@
+import { Product } from "product"
+
+model Category {
+  id            String      @id @default(uuid())
+  name          String
+  description   String?
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime?   @updatedAt @map("updated_at")
+
+  products  Product[]
+
+  @@map("category")
+  @@index(fields: [name])
+}

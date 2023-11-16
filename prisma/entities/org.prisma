@@ -1,0 +1,37 @@
+import { User } from "user"
+import { Tax } from "tax"
+import { Fee } from "fee"
+
+model Org {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String    @map("user_id")
+
+  taxs          Tax[]
+  fees          Fee[]
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
+
+  type          OrgType
+  status        OrgStatus
+
+  @@map("org")
+  @@index(fields: [name])
+}
+
+enum OrgStatus {
+  Active
+  Inactive
+}
+
+enum OrgType {
+  Company
+  Marketplace
+  Store
+  WeddingOrganizer
+  Influencer
+}

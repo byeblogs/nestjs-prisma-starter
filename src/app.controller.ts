@@ -1,6 +1,11 @@
 import { Controller, Get, Param, Request } from '@nestjs/common';
 import { AppService } from './app.service';
-import { FacebookAuthResult, GoogleAuthResult, UseFacebookAuth, UseGoogleAuth } from '@nestjs-hybrid-auth/all';
+import {
+  FacebookAuthResult,
+  GoogleAuthResult,
+  UseFacebookAuth,
+  UseGoogleAuth,
+} from '@nestjs-hybrid-auth/all';
 
 @Controller()
 export class AppController {
@@ -51,5 +56,4 @@ export class AppController {
       profile: result.profile,
     };
   }
-
 }

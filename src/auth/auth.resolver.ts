@@ -6,12 +6,12 @@ import {
   ResolveField,
 } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { Auth } from './models/auth.model';
-import { Token } from './models/token.model';
+import { Auth } from './entities/auth.entity';
+import { Token } from './entities/token.entity';
 import { LoginInput } from './dto/login.input';
 import { SignUpInput } from './dto/signup.input';
 import { RefreshTokenInput } from './dto/refresh-token.input';
-import { User } from 'src/users/models/user.model';
+import { User } from 'src/users/entities/user.entity';
 
 @Resolver(() => Auth)
 export class AuthResolver {

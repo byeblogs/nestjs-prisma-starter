@@ -1,0 +1,33 @@
+import { Post } from "post"
+import { Product } from "product"
+import { Org } from "org"
+import { TrxItem } from "trxItem"
+import { Trx } from "trx"
+import { Payment } from "payment"
+
+model User {
+  id        String      @id @default(uuid())
+  email     String      @unique
+  password  String
+  firstname String?
+  lastname  String?
+  fullname  String?
+  nickname  String?
+
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime?   @updatedAt @map("updated_at")
+  deletedAt DateTime?   @map("deleted_at")
+
+  orgs      Org[]     
+  posts     Post[]
+  products  Product[]
+  role      Role
+
+  @@map("user")
+  @@index(fields: [nickname])
+}
+
+enum Role {
+  Admin
+  User
+}

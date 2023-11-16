@@ -1,0 +1,31 @@
+import { User } from "user"
+import { Category } from "category"
+import { Product } from "product"
+import { Trx } from "trx"
+
+model TrxItem {
+  id            String        @id @default(uuid())
+  name          String?
+  description   String?
+  qty           Int           @default(0)
+
+  productId     String        @map("product_id")
+
+  trx           Trx?          @relation(fields: [trxId], references: [id])
+  trxId         String?       @map("trx_id")
+
+  buyerId       String        @map("buyer_id")
+  
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime?     @updatedAt @map("updated_at")
+  deletedAt     DateTime?     @map("deleted_at")
+
+  status        TrxItemStatus
+
+  @@map("trx_item")
+}
+
+enum TrxItemStatus {
+  Active
+  Inactive
+}

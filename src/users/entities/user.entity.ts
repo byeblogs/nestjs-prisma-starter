@@ -6,8 +6,8 @@ import {
   Field,
 } from '@nestjs/graphql';
 import { IsEmail } from 'class-validator';
-import { Post } from 'src/posts/models/post.model';
-import { BaseModel } from 'src/common/models/base.model';
+import { Post } from 'src/posts/entities/post.entity';
+import { BaseModel } from 'src/common/entities/base.entity';
 import { Role } from '@prisma/client';
 
 registerEnumType(Role, {

@@ -37,7 +37,7 @@
     "prisma:studio": "npx prisma studio",
     "prisma:generate": "npm run prisma:merge:schema && npx prisma generate",
     "prisma:generate:watch": "npx prisma generate --watch",
-    "prisma:merge:schema": "npx prisma-import -s \"./prisma/models/*.prisma\" -o \"./prisma/schema.prisma\" ",
+    "prisma:merge:schema": "npx prisma-import -s \"./prisma/entities/*.prisma\" -o \"./prisma/schema.prisma\" ",
     "prisma:docs": "npx prisma-docs-generator serve",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -63,9 +63,11 @@
     "@nestjs/core": "9.3.10",
     "@nestjs/graphql": "11.0.0",
     "@nestjs/jwt": "10.0.2",
+    "@nestjs/mapped-types": "*",
     "@nestjs/passport": "9.0.3",
     "@nestjs/platform-express": "9.3.10",
     "@nestjs/swagger": "6.2.1",
+    "@nestjs/throttler": "^4.2.1",
     "@prisma/client": "^4.16.1",
     "bcrypt": "5.1.0",
     "class-transformer": "0.5.1",
@@ -133,6 +135,6 @@
     "testEnvironment": "node"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seeders/main.ts"
   }
 }

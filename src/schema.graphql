@@ -17,8 +17,14 @@ input ChangePasswordInput {
 }
 
 input CreatePostInput {
-  content: String!
-  title: String!
+  description: String!
+  name: String!
+  status: StatusType!
+}
+
+input CreateProductInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
 }
 
 """
@@ -58,24 +64,39 @@ input LoginInput {
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
   createPost(createPostInput: CreatePostInput!): Post!
+  createProduct(createProductInput: CreateProductInput!): Product!
   login(loginInput: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  removeProduct(id: Int!): Product!
   signUp(signUpInput: SignUpInput!): Auth!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
   updateUser(data: UpdateUserInput!): User!
 }
 
 type Post {
-  author: User
-  content: String
-
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
+  description: String
   id: ID!
-  published: Boolean!
-  title: String!
+  name: String!
+  status: StatusType!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+  user: User!
+}
+
+type Product {
+  description: String!
+  name: String!
+  status: ProductStatus!
+  title: String!
+}
+
+"""Status of product"""
+enum ProductStatus {
+  Active
+  Inactive
 }
 
 type Query {
@@ -84,13 +105,15 @@ type Query {
   listPost(listPostInput: ListPostInput!): ListPostResponse!
   me: User!
   post(postId: String!): Post!
+  product(id: Int!): Product!
+  products: [Product!]!
   userPosts(userId: String!): [Post!]!
 }
 
 """User role"""
 enum Role {
-  ADMIN
-  USER
+  Admin
+  User
 }
 
 input SearchPostInput {
@@ -104,6 +127,13 @@ input SignUpInput {
   password: String!
 }
 
+"""Status of Post"""
+enum StatusType {
+  Active
+  Draft
+  Inactive
+}
+
 type Subscription {
   postCreated: Post!
 }
@@ -114,6 +144,12 @@ type Token {
 
   """JWT refresh token"""
   refreshToken: JWT!
+}
+
+input UpdateProductInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input UpdateUserInput {

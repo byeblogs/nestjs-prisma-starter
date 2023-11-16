@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from './password.service';
 import { SignUpInput } from './dto/signup.input';
-import { Token } from './models/token.model';
+import { Token } from './entities/token.entity';
 import { SecurityConfig } from 'src/common/configs/config.interface';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class AuthService {
         data: {
           ...payload,
           password: hashedPassword,
-          role: 'USER',
+          role: 'User',
         },
       });
 
@@ -74,6 +74,33 @@ export class AuthService {
 
   validateUser(userId: string): Promise<User> {
     return this.prisma.user.findUnique({ where: { id: userId } });
+  }
+
+  async verify(token: string): Promise<User> {
+    const tokenWithoutBearer = token.replace('Bearer ', '');
+    let decoded;
+
+      try {
+        decoded = this.jwtService.verify(tokenWithoutBearer, {
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+        });
+      } catch (err) {
+        let message;
+        switch (err.message) {
+          case 'invalid signature':
+            message = 'Invalid Token';
+            break;
+          case 'jwt expired':
+            message = 'Token Expired';
+            break;
+          default:
+            message = 'Failed to verify Token';
+            break;
+        }
+        throw new BadRequestException(message);
+      }
+    
+    return this.prisma.user.findUnique({ where: { id : decoded.userId } });
   }
 
   getUserFromToken(token: string): Promise<User> {

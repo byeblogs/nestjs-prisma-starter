@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Subscription } from '@nestjs/graphql';
 import { PrismaService } from 'nestjs-prisma';
-import { Post } from './models/post.model';
+import { Post } from './entities/post.entity';
 import { PubSub } from 'graphql-subscriptions';
 import { CreatePostInput } from './dto/create-post.input';
-import { User } from 'src/users/models/user.model';
+import { User } from 'src/users/entities/user.entity';
 import { UserIdArgs } from './args/user-id.args';
 import { PostIdArgs } from './args/post-id.args';
 import { ListPostInput } from './dto/list-post.input';
 import { ListPostResponse } from './dto/list-post.response';
+import { StatusType } from './dto/status.type';
 
 const pubSub = new PubSub();
 
@@ -24,10 +25,10 @@ export class PostsService {
   create(user: User, createPostInput: CreatePostInput) {
     const newPost = this.prisma.post.create({
       data: {
-        published: true,
-        title: createPostInput.title,
-        content: createPostInput.content,
-        authorId: user.id,
+        status: createPostInput.status,
+        name: createPostInput.name,
+        description: createPostInput.description,
+        userId: user.id,
       },
     });
     pubSub.publish('postCreated', { postCreated: newPost });
@@ -40,13 +41,13 @@ export class PostsService {
 
       const total = await this.prisma.post.count({
         where: {
-          published: true,
+          status: StatusType.Active,
         },
       });
       const posts = await this.prisma.post.findMany({
-        include: { author: true },
+        include: { user: true },
         where: {
-          published: true,
+          status: StatusType.Active,
         },
         take: limit,
         skip: page * limit,
@@ -63,7 +64,7 @@ export class PostsService {
   userPosts(id: UserIdArgs) {
     return this.prisma.user
       .findUnique({ where: { id: id.userId } })
-      .posts({ where: { published: true } });
+      .posts({ where: { status: StatusType.Active } });
     // or
     // return this.prisma.posts.findMany({
     //   where: {

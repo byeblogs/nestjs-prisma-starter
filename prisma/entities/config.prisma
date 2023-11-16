@@ -5,7 +5,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  // previewFeatures = []
+  previewFeatures = ["views"]
 }
 
 generator dbml {
@@ -14,8 +14,9 @@ generator dbml {
 
 generator erd {
   provider = "prisma-erd-generator"
-  output   = "documentation/erd.png"
+  output   = "documentation/erd.svg"
   theme    = "neutral"
+  includeRelationFromFields = true
 }
 
 generator docs {

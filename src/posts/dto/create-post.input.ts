@@ -1,13 +1,23 @@
 import { IsNotEmpty } from 'class-validator';
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, registerEnumType } from '@nestjs/graphql';
+import { StatusType } from './status.type';
+
+registerEnumType(StatusType, {
+  name: 'StatusType',
+  description: 'Status of Post',
+});
 
 @InputType()
 export class CreatePostInput {
   @Field()
   @IsNotEmpty()
-  content: string;
+  name: string;
 
   @Field()
   @IsNotEmpty()
-  title: string;
+  description: string;
+
+  @Field()
+  @IsNotEmpty()
+  status: StatusType;
 }

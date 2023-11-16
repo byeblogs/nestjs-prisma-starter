@@ -2,32 +2,258 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table Post {
+Table category {
   id String [pk]
+  name String [not null]
+  description String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  published Boolean [not null]
-  title String [not null]
-  content String
-  author User
-  authorId String
+  updatedAt DateTime
+  products product [not null]
 }
 
-Table User {
+Table fee {
   id String [pk]
+  name String [not null]
+  description String
+  amount Decimal [not null, default: 0]
+  org org [not null]
+  orgId String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  type FeeType [not null]
+  status FeeStatus [not null]
+}
+
+Table org {
+  id String [pk]
+  name String [not null]
+  description String
+  user user [not null]
+  userId String [not null]
+  taxs tax [not null]
+  fees fee [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  type OrgType [not null]
+  status OrgStatus [not null]
+}
+
+Table payment {
+  id String [pk]
+  name String
+  description String
+  total Decimal [not null, default: 0]
+  trx trx [not null]
+  trxId String [not null]
+  buyerId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  type PaymentType [not null]
+  status PaymentStatus [not null]
+}
+
+Table post {
+  id String [pk]
+  name String [not null]
+  description String [not null]
+  user user [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  status PostStatus [not null]
+}
+
+Table product {
+  id String [pk]
+  name String [not null]
+  description String [not null]
+  sku String
+  price Decimal [default: 0]
+  minOrderQty Int [default: 0]
+  qty Int [default: 0]
+  uom Uom [default: 'PCS']
+  currency Currency [default: 'IDR']
+  category category
+  categoryId String
+  user user
+  userId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  type ProductType [not null]
+  status ProductStatus [not null]
+}
+
+Table tax {
+  id String [pk]
+  name String [not null]
+  description String
+  amount Decimal [not null, default: 0]
+  org org [not null]
+  orgId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  type TaxType [not null]
+  status TaxStatus [not null]
+}
+
+Table trx {
+  id String [pk]
+  name String
+  description String
+  qty Int [not null, default: 0]
+  subTotal Decimal [not null, default: 0]
+  tax Decimal [not null, default: 0]
+  fee Decimal [not null, default: 0]
+  total Decimal [not null, default: 0]
+  buyerId String [not null]
+  sellerId String [not null]
+  trxItems trx_item [not null]
+  payments payment [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  status TrxStatus [not null]
+}
+
+Table trx_item {
+  id String [pk]
+  name String
+  description String
+  qty Int [not null, default: 0]
+  productId String [not null]
+  trx trx
+  trxId String
+  buyerId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  status TrxItemStatus [not null]
+}
+
+Table user {
+  id String [pk]
   email String [unique, not null]
   password String [not null]
   firstname String
   lastname String
-  posts Post [not null]
+  fullname String
+  nickname String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  orgs org [not null]
+  posts post [not null]
+  products product [not null]
   role Role [not null]
 }
 
-Enum Role {
-  ADMIN
-  USER
+Enum FeeStatus {
+  Active
+  Inactive
 }
 
-Ref: Post.authorId > User.id
+Enum FeeType {
+  Fix
+  Percentage
+}
+
+Enum OrgStatus {
+  Active
+  Inactive
+}
+
+Enum OrgType {
+  Company
+  Marketplace
+  Store
+  WeddingOrganizer
+  Influencer
+}
+
+Enum PaymentType {
+  BankTransfer
+  Cash
+}
+
+Enum PaymentStatus {
+  Cancelled
+  Expire
+  Reject
+  Success
+  WaitingForPayment
+}
+
+Enum PostStatus {
+  Active
+  Draft
+  Inactive
+}
+
+Enum ProductStatus {
+  Active
+  Inactive
+}
+
+Enum ProductType {
+  ConvenienceGoods
+  ShoppingGoods
+  SpecialtyProducts
+  UnsoughtGoods
+}
+
+Enum Uom {
+  PCS
+}
+
+Enum Currency {
+  IDR
+}
+
+Enum TaxStatus {
+  Active
+  Inactive
+}
+
+Enum TaxType {
+  Fix
+  Percentage
+}
+
+Enum TrxStatus {
+  Cancelled
+  Expire
+  Reject
+  Success
+  WaitingForPayment
+}
+
+Enum TrxItemStatus {
+  Active
+  Inactive
+}
+
+Enum Role {
+  Admin
+  User
+}
+
+Ref: fee.orgId > org.id
+
+Ref: org.userId > user.id
+
+Ref: payment.trxId > trx.id
+
+Ref: post.userId > user.id
+
+Ref: product.categoryId > category.id
+
+Ref: product.userId > user.id
+
+Ref: tax.orgId > org.id
+
+Ref: trx_item.trxId > trx.id

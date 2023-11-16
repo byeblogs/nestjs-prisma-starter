@@ -1,0 +1,44 @@
+import { User } from "user"
+import { Category } from "category"
+import { Product } from "product"
+import { TrxItem } from "trxItem"
+import { Fee } from "fee"
+import { Tax } from "tax"
+import { Payment } from "payment"
+
+model Trx {
+  id            String    @id @default(uuid())
+  name          String?
+  description   String?
+  qty           Int       @default(0)
+
+  subTotal      Decimal   @default(0)
+
+  tax           Decimal   @default(0)
+  fee           Decimal   @default(0)
+
+  total         Decimal   @default(0)
+  
+  buyerId       String    @map("buyer_id")
+  sellerId      String    @map("seller_id")
+
+  trxItems      TrxItem[]
+  payments      Payment[]
+
+  userId        String    @map("user_id")
+  
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+  status        TrxStatus
+
+  @@map("trx")
+}
+
+enum TrxStatus {
+  Cancelled
+  Expire
+  Reject
+  Success
+  WaitingForPayment
+}

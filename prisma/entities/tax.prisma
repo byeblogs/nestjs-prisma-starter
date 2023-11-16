@@ -1,0 +1,33 @@
+import { User } from "user"
+import { Trx } from "trx"
+import { Org } from "org"
+
+model Tax {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+
+  amount        Decimal   @default(0)
+
+  org           Org      @relation(fields: [orgId], references: [id])
+  orgId         String   @map("org_id")
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime?  @updatedAt @map("updated_at")
+  deletedAt     DateTime?  @map("deleted_at")
+
+  type          TaxType
+  status        TaxStatus
+
+  @@map("tax")
+}
+
+enum TaxStatus {
+  Active
+  Inactive
+}
+
+enum TaxType {
+  Fix
+  Percentage
+}

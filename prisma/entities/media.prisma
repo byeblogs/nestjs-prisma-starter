@@ -1,27 +1,30 @@
-
-import { User } from "./user"
-
-
-model Post {
+model Media {
   id                    String      @id @default(uuid())
   name                  String
   description           String
-  
-  user                  User        @relation(fields: [userId], references: [id])
-  userId                String      @map("user_id")
+
+  path                  String
+  filename              String
 
   createdAt             DateTime    @default(now()) @map("created_at")
   updatedAt             DateTime?   @updatedAt @map("updated_at")
   deletedAt             DateTime?   @map("deleted_at")
 
-  status                PostStatus
+  status                MediaStatus
+  type                  MediaType
 
-  @@map("post")
+  @@map("media")
   @@index(fields: [name])
 }
 
-enum PostStatus {
+enum MediaStatus {
   Active
   Draft
   Inactive
+}
+
+enum MediaType {
+  Image
+  Video
+  Document
 }

@@ -9,7 +9,7 @@ import { UserIdArgs } from './args/user-id.args';
 import { PostIdArgs } from './args/post-id.args';
 import { ListPostInput } from './dto/list-post.input';
 import { ListPostResponse } from './dto/list-post.response';
-import { StatusType } from './dto/status.type';
+import { PostStatus } from './dto/status.post';
 
 const pubSub = new PubSub();
 
@@ -23,6 +23,7 @@ export class PostsService {
   }
 
   create(user: User, createPostInput: CreatePostInput) {
+    
     const newPost = this.prisma.post.create({
       data: {
         status: createPostInput.status,
@@ -41,13 +42,13 @@ export class PostsService {
 
       const total = await this.prisma.post.count({
         where: {
-          status: StatusType.Active,
+          status: PostStatus.Active,
         },
       });
       const posts = await this.prisma.post.findMany({
         include: { user: true },
         where: {
-          status: StatusType.Active,
+          status: PostStatus.Active,
         },
         take: limit,
         skip: page * limit,
@@ -64,7 +65,7 @@ export class PostsService {
   userPosts(id: UserIdArgs) {
     return this.prisma.user
       .findUnique({ where: { id: id.userId } })
-      .posts({ where: { status: StatusType.Active } });
+      .posts({ where: { status: PostStatus.Active } });
     // or
     // return this.prisma.posts.findMany({
     //   where: {

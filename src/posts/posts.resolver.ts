@@ -30,6 +30,8 @@ export class PostsResolver {
     private postsService: PostsService
   ) {}
 
+  @Roles(Role.Admin)
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Post)
   async createPost(
     @UserEntity() user: User,

@@ -85,6 +85,41 @@ enum FeeType {
 }
 
 //
+// media.prisma
+//
+
+model Media {
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  path     String
+  filename String
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  status MediaStatus
+  type   MediaType
+
+  @@index(fields: [name])
+  @@map("media")
+}
+
+enum MediaStatus {
+  Active
+  Draft
+  Inactive
+}
+
+enum MediaType {
+  Image
+  Video
+  Document
+}
+
+//
 // org.prisma
 //
 

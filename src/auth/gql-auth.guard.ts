@@ -22,34 +22,40 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     super();
   }
 
-  /**
-   * @param context
-   */
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (isPublic) {
-      return true;
-    }
+  // /**
+  //  * @param context
+  //  */
+  // async canActivate(context: ExecutionContext): Promise<boolean> {
+  //   const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+  //     context.getHandler(),
+  //     context.getClass(),
+  //   ]);
+  //   if (isPublic) {
+  //     return true;
+  //   }
     
-    const ctx = GqlExecutionContext.create(context).getContext();
-    const headers = ctx?.req?.headers;
-    if (!headers?.authorization) {
-      throw new AuthenticationError('You must provide token');
-    }
-    const user = await this.authService.verify(headers?.authorization);
+  //   const ctx = GqlExecutionContext.create(context).getContext();
+  //   const headers = ctx?.req?.headers;
+  //   if (!headers?.authorization) {
+  //     throw new AuthenticationError('You must provide token');
+  //   }
+  //   const user = await this.authService.verify(headers?.authorization);
 
-    ctx.user = user;
-    return true;
-  }
+  //   ctx.user = user;
+  //   return true;
+  // }
 
   /**
    * @param context
    */
   getRequest(context: ExecutionContext): Context {
     const ctx = GqlExecutionContext.create(context);
+
+    const headers = ctx.getContext().req?.headers;
+    if (!headers?.authorization) {
+      throw new AuthenticationError('You must provide token');
+    }
+
     return ctx.getContext().req;
   }
 }

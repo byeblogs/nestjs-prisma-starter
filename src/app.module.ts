@@ -5,9 +5,10 @@ import { PrismaModule, loggingMiddleware } from 'nestjs-prisma';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppResolver } from './app.resolver';
-import { AuthModule } from 'src/auth/auth.module';
-import { UsersModule } from 'src/users/users.module';
-import { PostsModule } from 'src/posts/posts.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { MediasModule } from './medias/medias.module';
 import config from 'src/common/configs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfigService } from './gql-config.service';
@@ -77,6 +78,7 @@ import { APP_GUARD } from '@nestjs/core';
     UsersModule,
     PostsModule,
     ProductsModule,
+    MediasModule,
   ],
   controllers: [AppController],
   providers: [

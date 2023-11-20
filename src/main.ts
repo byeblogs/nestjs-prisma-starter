@@ -10,6 +10,9 @@ import type {
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
 
+import { graphqlUploadExpress } from 'graphql-upload';
+
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -27,6 +30,15 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const nestConfig = configService.get<NestConfig>('nest');
   const corsConfig = configService.get<CorsConfig>('cors');
+
+  // CSRF
+  // Set app to use graphql-upload
+  app.use(graphqlUploadExpress({
+    maxFileSize: 1000000, 
+    maxFiles: 10 
+  }));
+
+
   const swaggerConfig = configService.get<SwaggerConfig>('swagger');
 
   // Swagger Api
@@ -49,3 +61,4 @@ async function bootstrap() {
   await app.listen(process.env.PORT || nestConfig.port || 3000);
 }
 bootstrap();
+

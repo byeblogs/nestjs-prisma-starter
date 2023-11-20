@@ -16,10 +16,17 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
+input CreateMediaInput {
+  description: String
+  files: [Upload!]!
+  isPublic: Boolean!
+  name: String
+}
+
 input CreatePostInput {
   description: String!
   name: String!
-  status: StatusType!
+  status: PostStatus!
 }
 
 input CreateProductInput {
@@ -69,6 +76,7 @@ type Mutation {
   refreshToken(token: JWT!): Token!
   removeProduct(id: Int!): Product!
   signUp(signUpInput: SignUpInput!): Auth!
+  singleUpload(createMediaInput: CreateMediaInput!): Boolean!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   updateUser(data: UpdateUserInput!): User!
 }
@@ -79,11 +87,18 @@ type Post {
   description: String
   id: ID!
   name: String!
-  status: StatusType!
+  status: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   user: User!
+}
+
+"""Status of Post"""
+enum PostStatus {
+  Active
+  Draft
+  Inactive
 }
 
 type Product {
@@ -127,13 +142,6 @@ input SignUpInput {
   password: String!
 }
 
-"""Status of Post"""
-enum StatusType {
-  Active
-  Draft
-  Inactive
-}
-
 type Subscription {
   postCreated: Post!
 }
@@ -156,6 +164,9 @@ input UpdateUserInput {
   firstname: String
   lastname: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   """Identifies the date and time when the object was created."""

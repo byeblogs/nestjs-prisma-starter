@@ -25,6 +25,19 @@ Table fee {
   status FeeStatus [not null]
 }
 
+Table media {
+  id String [pk]
+  name String [not null]
+  description String [not null]
+  path String [not null]
+  filename String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  deletedAt DateTime
+  status MediaStatus [not null]
+  type MediaType [not null]
+}
+
 Table org {
   id String [pk]
   name String [not null]
@@ -160,6 +173,18 @@ Enum FeeStatus {
 Enum FeeType {
   Fix
   Percentage
+}
+
+Enum MediaStatus {
+  Active
+  Draft
+  Inactive
+}
+
+Enum MediaType {
+  Image
+  Video
+  Document
 }
 
 Enum OrgStatus {
